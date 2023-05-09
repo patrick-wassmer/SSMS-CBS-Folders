@@ -74,6 +74,45 @@ namespace SsmsSchemaFolders
                     }
                     break;
 
+                case FolderType.CBS:
+                    if (folderLevel == 2)
+                    {
+                        string customSchema = quickSchemaName ? GetNodeSchemaQuick(node) : GetNodeSchema(node);
+                        if (customSchema != null)
+                        {
+                            // Don't group other schema than dbo
+                            if (!customSchema.StartsWith("dbo", StringComparison.OrdinalIgnoreCase))
+                                return null;
+                        }
+
+                        var customName = GetNodeName(node);
+
+                        if (customName[0] == '_')   // Start with '_'
+                        {
+                            int secondUnderlinePos = customName.IndexOf('_', 1);
+                            if (secondUnderlinePos != -1)
+                            {
+                                return customName.Substring(0, secondUnderlinePos);
+                            }
+                            return customName;
+                        }
+                        else // Start with quadri
+                        {
+                            int firstUnderlinePos = customName.IndexOf('_', 0);
+                            if (firstUnderlinePos == 4 || (firstUnderlinePos == 5 && customName[4] == 'L'))
+                            {
+                                string quadri = customName.Substring(0, 4).ToUpper();
+                                if (quadri == "GLOB")
+                                    return quadri;
+
+                                //return customName.Substring(0, 4);
+                            }
+                        }
+
+                        return $"(Not grouped)"; // customName.Substring(0, 2).ToUpper();
+                    }
+                    break;
+
             }
             return null;
         }

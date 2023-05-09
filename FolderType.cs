@@ -5,6 +5,7 @@
         None,
         Schema,
         Alphabetical,
-        Custom
+        Custom,
+        CBS
     }
 }
